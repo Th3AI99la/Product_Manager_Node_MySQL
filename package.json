@@ -1,0 +1,17 @@
+{
+  "name": "product_manager_node_mysql",
+  "version": "1.0.0",
+  "description": "Projeto NodeJS_MySQL",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "express",
+    "express-handlebars",
+    "bootstrap",
+    "mysql"
+  ],
+  "author": "Thalles Alves",
+  "license": "ISC"
+}
