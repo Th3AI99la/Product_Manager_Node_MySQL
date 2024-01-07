@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,400;0,500;1,400&family=Sofia+Sans+Semi+Condensed:ital,wght@0,200;1,100&display=swap');
+
+* {
+  font-family: 'Merriweather Sans', sans-serif;
+  font-family: 'Sofia Sans Semi Condensed', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: red;
+}
+
+form {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.form-control::placeholder {
+  color: #333; /* Cor preta para o placeholder */
+}
+
+.form-control:hover::placeholder {
+  color: #ffffff; /* Cor branca para o placeholder durante o hover */
+}
+
+
+form input {
+  margin-bottom: 15px;
+  padding: 10px;
+  line-height: 1;
+  text-decoration: none;
+  color: #333333;
+  font-size: 18px;
+  border-radius: 0px;
+  width: 200px;
+  height: 40px;
+  font-weight: bold;
+  border: 2px solid #333333;
+  transition: 0.3s;
+  box-shadow: 5px 5px 0px 0px rgba(51, 51, 51, 1);
+  transform: skew(-20deg);
+  background-color: #ffffff;
+  -webkit-transform: skew(-20deg);
+  -moz-transform: skew(-20deg);
+  -ms-transform: skew(-20deg);
+  -o-transform: skew(-20deg);
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+}
+
+form input:hover {
+  box-shadow: 0 0 #333;
+  color: #fff;
+  background-color: #333;
+}
+
+.btn-person_1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  text-decoration: none;
+  color: #333333;
+  font-size: 18px;
+  border-radius: 0px;
+  width: 200px;
+  height: 40px;
+  font-weight: bold;
+  border: 2px solid #333333;
+  transition: 0.3s;
+  box-shadow: 5px 5px 0px 0px rgba(51, 51, 51, 1);
+  transform: skew(-20deg);
+  background-color: #ffffff;
+  -webkit-transform: skew(-20deg);
+  -moz-transform: skew(-20deg);
+  -ms-transform: skew(-20deg);
+  -o-transform: skew(-20deg);
+  margin: 0 auto;
+}
+
+.btn-person_1:hover {
+  box-shadow: 0 0 #333;
+  color: #fff;
+  background-color: #333;
+}

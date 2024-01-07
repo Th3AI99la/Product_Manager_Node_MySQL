@@ -1,6 +1,10 @@
-//Importar modulos
+// Importar express
 const express = require('express');
 
+// Importar express-handlebars
+const { engine } = require('express-handlebars');
+
+// Importar segurança dotenv
 require('dotenv').config();
 
 // Importar module MySQL
@@ -8,6 +12,24 @@ const mysql = require('mysql2');
 
 //App
 const app = express();
+
+// Configuração do Bootstrap
+
+app.use('/bootstrap', express.static('./node_modules/bootstrap/dist'));
+
+// Configuração CSS
+app.use(express.static('public'));
+
+// Configuração do express-handlebars
+
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+app.set('views', './views');
+
+// Manipulaçao de dados via rotas JSON
+
+app.use(express.json());
+app.use(express.urlencoded({ express: false }));
 
 // Configuração de conexão
 
@@ -44,32 +66,36 @@ conexaoDB.connect(function (erro) {
   }
 });
 
-//Rota OlaMundo
+//Rota Principal (nao precisa colocar o .handlebars)
 
 app.get('/', function (req, res) {
-  console.log('\nServidor Iniciado!');
-  res.write('Mudado');
+  res.render('forms');
+});
+
+// Rota de Cadastro (Register)
+
+app.post('/register', function (req, res) {
+  console.log(req.body);
   res.end();
 });
 
-// Servidor
+// Configuração do Servidor
 const PORTA = 3000;
 
 const servidor = app.listen(PORTA, function (erro) {
-    if (erro) {
-        console.error('Erro ao iniciar o servidor:', erro.message);
+  if (erro) {
+    console.error('Erro ao iniciar o servidor:', erro.message);
 
-        // Tratar erros específicos, se necessário
-        if (erro.code === 'EADDRINUSE') {
-            console.error(`A porta ${PORTA} está em uso. Escolha outra porta.`);
-        } else {
-            console.error('Erro desconhecido ao iniciar o servidor.');
-        }
-
-        // Encerrar o aplicativo ou tomar outras medidas, se necessário
-        process.exit(1);
+    // Tratar erros específicos, se necessário
+    if (erro.code === 'EADDRINUSE') {
+      console.error(`A porta ${PORTA} está em uso. Escolha outra porta.`);
     } else {
-        console.log(`Servidor iniciado com sucesso!\nPORTA: ${PORTA}`);
+      console.error('Erro desconhecido ao iniciar o servidor.');
     }
-});
 
+    // Encerrar o aplicativo ou tomar outras medidas, se necessário
+    process.exit(1);
+  } else {
+    console.log(`\nServidor iniciado com sucesso!\nPORTA: ${PORTA}`);
+  }
+});
