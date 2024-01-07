@@ -1,6 +1,9 @@
 // Importar express
 const express = require('express');
 
+// Importar fs
+const fs = require('fs');
+
 // Importar Fileupload
 
 const fileupload = require('express-fileupload');
@@ -34,7 +37,7 @@ app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
-// Manipulaçao de dados via rotas JSON
+// Manipulaçao de dados via rotas JSON-
 
 app.use(express.json());
 app.use(express.urlencoded({ express: false }));
@@ -70,7 +73,7 @@ conexaoDB.connect(function (erro) {
     // Encerrar o aplicativo ou tomar outras medidas, se necessário
     process.exit(1);
   } else {
-    console.log('Conexão ao banco de dados efetuada com sucesso!');
+    console.log('Conexão ao banco de dados efetuada com sucesso!\n');
   }
 });
 
@@ -83,26 +86,51 @@ app.get('/', function (req, res) {
 // Rota de Cadastro (Register)
 
 app.post('/register', (req, res) => {
-  // Verifica se existem arquivos e se há um arquivo de imagem
-  const { files } = req;
-  if (!files || !files.image || !files.image.name) {
-    return res.status(400).send('Nenhum arquivo válido foi enviado.');
+  // Obter os dados cadastrais do Banco de dados
+  let nome = req.body.nome;
+  let valor = req.body.valor;
+
+  // Verificar se há um arquivo de imagem na requisição
+  if (!req.files || !req.files.imagem || !req.files.imagem.name) {
+    return res.status(400).send('Nenhum arquivo de imagem foi enviado.');
   }
 
-  // Obtém o objeto de imagem do pedido
-  const { image } = files;
+  let imagem = req.files.imagem.name;
 
-  // Caminho onde o arquivo será salvo
-  const imagePath = __dirname + '/images/' + image.name;
+  // Construir a query SQL
+  let sql = `INSERT INTO produtos (nome, valor, imagem) VALUES ('${nome}', ${valor}, '${imagem}')`;
 
-  // Move o arquivo para o diretório '/images'
-  image.mv(imagePath, (err) => {
-    if (err) {
-      return res.status(500).send(err);
+  // Verificar se o diretório 'images' existe, caso contrário, criar
+  const imagesDirectory = __dirname + '/images';
+  if (!fs.existsSync(imagesDirectory)) {
+    fs.mkdirSync(imagesDirectory);
+  }
+
+  // Executar SQL
+  conexaoDB.query(sql, function (erro, retorno) {
+    // Verificar se houve algum erro na execução do SQL
+    if (erro) {
+      console.error(erro);
+      return res.status(500).send('Erro ao cadastrar o produto.');
     }
-  });
 
-  res.send('enviado');
+    // Mover o arquivo de imagem para a pasta 'images'
+    req.files.imagem.mv(
+      __dirname + '/images/' + req.files.imagem.name,
+      function (erro_saving_image) {
+        if (erro_saving_image) {
+          console.error(erro_saving_image);
+          return res.status(500).send('Erro ao salvar a imagem.');
+        }
+
+        // Produto cadastrado e imagem salva com sucesso
+        console.log(retorno);
+
+        // Redirecionar para a rota principal após o cadastro
+        res.redirect('/');
+      },
+    );
+  });
 });
 
 // Configuração do Servidor
