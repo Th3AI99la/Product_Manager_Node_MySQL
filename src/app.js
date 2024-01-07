@@ -1,6 +1,10 @@
 // Importar express
 const express = require('express');
 
+// Importar Fileupload
+
+const fileupload = require('express-fileupload');
+
 // Importar express-handlebars
 const { engine } = require('express-handlebars');
 
@@ -12,6 +16,10 @@ const mysql = require('mysql2');
 
 //App
 const app = express();
+
+// Habilitando o fileupload
+
+app.use(fileupload());
 
 // Configuração do Bootstrap
 
@@ -74,9 +82,27 @@ app.get('/', function (req, res) {
 
 // Rota de Cadastro (Register)
 
-app.post('/register', function (req, res) {
-  console.log(req.body);
-  res.end();
+app.post('/register', (req, res) => {
+  // Verifica se existem arquivos e se há um arquivo de imagem
+  const { files } = req;
+  if (!files || !files.image || !files.image.name) {
+    return res.status(400).send('Nenhum arquivo válido foi enviado.');
+  }
+
+  // Obtém o objeto de imagem do pedido
+  const { image } = files;
+
+  // Caminho onde o arquivo será salvo
+  const imagePath = __dirname + '/images/' + image.name;
+
+  // Move o arquivo para o diretório '/images'
+  image.mv(imagePath, (err) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+  });
+
+  res.send('enviado');
 });
 
 // Configuração do Servidor
