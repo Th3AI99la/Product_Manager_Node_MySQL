@@ -25,7 +25,6 @@ form {
   color: #ffffff; /* Cor branca para o placeholder durante o hover */
 }
 
-
 form input {
   margin-bottom: 15px;
   padding: 10px;
@@ -86,4 +85,137 @@ form input:hover {
   box-shadow: 0 0 #333;
   color: #fff;
   background-color: #333;
+}
+
+.btn-person_alter {
+  margin: auto;
+  display: block;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 18px;
+  border-radius: 0px;
+  width: 160px;
+  height: 35px;
+  font-weight: bold;
+  border: 2px solid #333333;
+  transition: 0.3s;
+  background-color: #2196f3;
+}
+
+.btn-person_alter:hover {
+  box-shadow: 0 0 #333;
+  color: #fff;
+  background-color: #333;
+}
+
+.btn-person_remove {
+  margin: auto;
+  display: block;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 18px;
+  border-radius: 0px;
+  width: 160px;
+  height: 35px;
+  font-weight: bold;
+  border: 2px solid #333333;
+  transition: 0.3s;
+  background-color: #b71c1c;
+}
+
+.btn-person_remove:hover {
+  box-shadow: 0 0 #333;
+  color: #fff;
+  background-color: #333;
+}
+.texts {
+  margin-top: 15px;
+  font-size: 17px;
+}
+
+.card {
+  margin-top: 40px;
+  padding: 2px;
+  box-sizing: border-box;
+  box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.5s;
+  display: flex;
+  justify-content: center;
+  user-select: none;
+  color: white;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+.card:hover {
+  border: 1px solid black;
+  transform: scale(1.05);
+}
+
+.card a {
+  margin-top: 5px;
+}
+.nome_produto {
+  font-size: 18px;
+  color: black;
+}
+
+.valor_produto {
+  color: green;
+  font-size: 20px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial,
+    sans-serif;
+}
+
+.imagem_produto {
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+.rating {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  flex-direction: row-reverse;
+}
+
+.rating input {
+  display: none;
+}
+
+.rating label {
+  float: right;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.3s;
+}
+
+.rating label:before {
+  content: '\2605';
+  font-size: 30px;
+}
+
+.rating input:checked ~ label,
+.rating label:hover,
+.rating label:hover ~ label {
+  color: #b71c1c;
+  transition: color 0.3s;
 }

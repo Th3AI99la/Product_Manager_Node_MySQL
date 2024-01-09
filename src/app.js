@@ -31,6 +31,10 @@ app.use('/bootstrap', express.static('./node_modules/bootstrap/dist'));
 // Configuração CSS
 app.use(express.static('public'));
 
+//Referciando a pasta de imagens
+
+app.use('/src/images', express.static(__dirname + '/images'));
+
 // Configuração do express-handlebars
 
 app.engine('handlebars', engine());
@@ -80,7 +84,24 @@ conexaoDB.connect(function (erro) {
 //Rota Principal (nao precisa colocar o .handlebars)
 
 app.get('/', function (req, res) {
-  res.render('forms');
+  //SQL
+  let sql = 'SELECT * FROM produtos';
+  //Executar comando SQL
+  conexaoDB.query(sql, function (erro, retorno) {
+    res.render('forms', { produtos: retorno });
+  });
+});
+
+// Rota para adcionar estrelas (rating)
+app.get('/', function (req, res) {
+  // SQL para obter produtos com suas avaliações
+  let sql =
+    'SELECT p.*, AVG(a.rating) as media_avaliacao FROM produtos p LEFT JOIN avaliacoes a ON p.id_produto = a.id_produto GROUP BY p.id_produto';
+
+  // Executar comando SQL
+  conexaoDB.query(sql, function (erro, retorno) {
+    res.render('forms', { produtos: retorno });
+  });
 });
 
 // Rota de Cadastro (Register)
@@ -130,6 +151,24 @@ app.post('/register', (req, res) => {
         res.redirect('/');
       },
     );
+  });
+});
+
+// ESTRELAS POST
+app.post('/avaliar/:id_produto', (req, res) => {
+  let id_produto = req.params.id_produto;
+  let rating = req.body.rating;
+
+  let sql = `INSERT INTO avaliacoes (id_produto, rating) VALUES (${id_produto}, ${rating})`;
+
+  // Executar SQL
+  conexaoDB.query(sql, function (erro, retorno) {
+    if (erro) {
+      console.error(erro);
+      return res.status(500).send('Erro ao avaliar o produto.');
+    }
+
+    res.redirect('/');
   });
 });
 
