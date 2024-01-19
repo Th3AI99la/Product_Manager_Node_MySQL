@@ -9,7 +9,7 @@
 }
 
 body {
-  background-color: red;
+  background-color: rgb(1, 31, 114);
 }
 
 form {
@@ -82,6 +82,37 @@ form input:hover {
 }
 
 .btn-person_1:hover {
+  box-shadow: 0 0 #333;
+  color: #fff;
+  background-color: #333;
+}
+
+.btn-person_2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 18px;
+  border-radius: 0px;
+  width: 200px;
+  height: 40px;
+  font-weight: bold;
+  border: 2px solid #333333;
+  transition: 0.3s;
+  box-shadow: 5px 5px 0px 0px rgba(51, 51, 51, 1);
+  transform: skew(-20deg);
+  background-color: #b71c1c;
+  -webkit-transform: skew(-20deg);
+  -moz-transform: skew(-20deg);
+  -ms-transform: skew(-20deg);
+  -o-transform: skew(-20deg);
+  margin: 0 auto;
+  margin-top: 20px;
+}
+
+.btn-person_2:hover {
   box-shadow: 0 0 #333;
   color: #fff;
   background-color: #333;
@@ -219,3 +250,37 @@ form input:hover {
   color: #b71c1c;
   transition: color 0.3s;
 }
+
+.img-form-edit {
+  width: 210px;
+  margin-bottom: 30px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+
+    .form-container {
+        text-align: center;
+    }
+
+    .img-form-edit {
+        max-width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .code_text_product {
+        display: block;
+        margin-bottom: 5px;
+        /* Adicione estilos específicos para a classe code_text_product aqui */
+        color: #ffffff; /* Cor do texto */
+        font-size: 14px; /* Tamanho da fonte */
+        /* Outros estilos desejados */
+    }
+
+    input, select {
+        width: 100%;
+        margin-bottom: 10px;
+    }

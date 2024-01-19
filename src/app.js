@@ -172,11 +172,78 @@ app.post('/avaliar/:id_produto', (req, res) => {
   });
 });
 
+// Rota remover produtos
+
+app.get('/remover_produto/:id_produto&:imagem', function (req, res) {
+  // SQL
+  let sql = `DELETE FROM produtos WHERE id_produto = ${req.params.id_produto}`;
+
+  // Executar SQL
+  conexaoDB.query(sql, function (erro, retorno) {
+    // caso falhe o comando SQL
+    if (erro) {
+      console.error(erro);
+      return res.status(500).send('Erro ao remover o produto.');
+    }
+
+    // caso o comando SQL funcione
+    fs.unlink(__dirname + '/images/' + req.params.imagem, (erro_imagem) => {
+      if (erro_imagem) {
+        console.error(erro_imagem);
+        return res.status(500).send('Erro ao remover a imagem.');
+      }
+
+      // Redirecionar para a rota principal após a remoção
+      res.redirect('/');
+    });
+  });
+});
+
+// Rota redirecionar forms para edição/alteração
+
+app.get('/editForms/:id_produto', function (req, res) {
+  //SQL
+  let sql = `SELECT * FROM produtos WHERE id_produto = ${req.params.id_produto}`;
+
+  // Executar SQL
+  conexaoDB.query(sql, function (erro, retorno) {
+    // caso haja falha
+    if (erro) throw erro;
+
+    // caso de certo o comando SQL
+    res.render('editForms', { produto: retorno[0] });
+  });
+});
+
+// Rota editar produtos
+
+app.post('/edit', function (req, res) {
+  //obter os dados do forms
+  let nome = req.body.nome;
+  let valor = req.body.valor;
+  let id_produto = req.body.id_produto;
+  let nameImage = req.body.nameImage;
+  let imagem = req.files.imagem.name;
+
+  // exibir dados
+
+  console.log(nome);
+  console.log('Valor:',valor);
+  console.log('Codigo do produto:', id_produto);
+  console.log(nameImage);
+  console.log('New Image:', imagem);
+
+  // finalizar rota
+
+  res.end();
+});
+
 // Configuração do Servidor
 const PORTA = 3000;
 
 const servidor = app.listen(PORTA, function (erro) {
   if (erro) {
+    res.render('editForms');
     console.error('Erro ao iniciar o servidor:', erro.message);
 
     // Tratar erros específicos, se necessário
