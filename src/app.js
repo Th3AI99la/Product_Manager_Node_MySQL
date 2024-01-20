@@ -223,19 +223,50 @@ app.post('/edit', function (req, res) {
   let valor = req.body.valor;
   let id_produto = req.body.id_produto;
   let nameImage = req.body.nameImage;
-  let imagem = req.files.imagem.name;
 
-  // exibir dados
+  // Definir o tipo de edição
 
-  console.log(nome);
-  console.log('Valor:',valor);
-  console.log('Codigo do produto:', id_produto);
-  console.log(nameImage);
-  console.log('New Image:', imagem);
+  try {
+    // Objeto de imagem
+    let imagem = req.files.imagem;
 
-  // finalizar rota
+    // SQL
+    let sql = `UPDATE produtos SET nome='${nome}', valor=${valor}, imagem='${imagem.name}' WHERE id_produto=${id_produto}`;
 
-  res.end();
+    // Executar comando SQL
+    conexaoDB.query(sql, function (erro, retorno) {
+      // caso falhe o comando SQL
+      if (erro) throw erro;
+
+      // Remover imagem antiga
+
+      const fs = require('fs');
+
+      fs.unlink(__dirname + '/images/' + nameImage, (erro_imagem) => {
+        if (erro_imagem) {
+          console.error(erro_imagem);
+          return res.status(500).send('Erro ao remover a imagem.');
+        }
+      });
+
+      // Cadastrar nova imagem
+      imagem.mv(__dirname + '/images/' + imagem.name);
+    });
+  } catch (erro) {
+    // SQL
+    let sql = `UPDATE produtos SET nome='${nome}', valor=${valor}, WHERE id_produto=${id_produto}`;
+
+    // Executar SQL
+    conexaoDB.query(sql, function (erro, retorno) {
+      // caso falhe o comando SQL
+
+      if (erro) throw erro;
+    });
+  }
+
+  // Redirecionar para rota principal
+
+  res.redirect('/');
 });
 
 // Configuração do Servidor

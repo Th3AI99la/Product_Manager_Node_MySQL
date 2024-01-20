@@ -71,7 +71,7 @@ form input:hover {
   font-weight: bold;
   border: 2px solid #333333;
   transition: 0.3s;
-  box-shadow: 5px 5px 0px 0px rgba(51, 51, 51, 1);
+  box-shadow: 5px 5px 0px 0px rgb(51, 51, 51);
   transform: skew(-20deg);
   background-color: #ffffff;
   -webkit-transform: skew(-20deg);
@@ -82,9 +82,9 @@ form input:hover {
 }
 
 .btn-person_1:hover {
-  box-shadow: 0 0 #333;
-  color: #fff;
-  background-color: #333;
+  box-shadow: 0 0 #333333;
+  color: #ffffff;
+  background-color: #27aa03f6;
 }
 
 .btn-person_2 {
@@ -260,27 +260,3 @@ form input:hover {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
 }
-
-
-    .form-container {
-        text-align: center;
-    }
-
-    .img-form-edit {
-        max-width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .code_text_product {
-        display: block;
-        margin-bottom: 5px;
-        /* Adicione estilos específicos para a classe code_text_product aqui */
-        color: #ffffff; /* Cor do texto */
-        font-size: 14px; /* Tamanho da fonte */
-        /* Outros estilos desejados */
-    }
-
-    input, select {
-        width: 100%;
-        margin-bottom: 10px;
-    }
