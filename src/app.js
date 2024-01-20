@@ -92,6 +92,17 @@ app.get('/', function (req, res) {
   });
 });
 
+//Rota Principal - message_status
+
+app.get('/:message_status', function (req, res) {
+  //SQL
+  let sql = 'SELECT * FROM produtos';
+  //Executar comando SQL
+  conexaoDB.query(sql, function (erro, retorno) {
+    res.render('forms', { produtos: retorno, message_status: req.params.message_status });
+  });
+});
+
 // Rota para adcionar estrelas (rating)
 app.get('/', function (req, res) {
   // SQL para obter produtos com suas avaliações
@@ -112,8 +123,9 @@ app.post('/register', (req, res) => {
   let valor = req.body.valor;
 
   // Verificar se há um arquivo de imagem na requisição
-  if (!req.files || !req.files.imagem || !req.files.imagem.name) {
-    return res.status(400).send('Nenhum arquivo de imagem foi enviado.');
+  if (!req.files || !req.files.imagem || !req.files.imagem.name || !nome || !valor) {
+    // Redirecionar para a rota "register-fail" se algo estiver faltando
+    return res.redirect('/register-fail');
   }
 
   let imagem = req.files.imagem.name;
@@ -153,6 +165,12 @@ app.post('/register', (req, res) => {
     );
   });
 });
+
+// Rota para tratamento de falha no cadastro
+app.get('/register-fail', (req, res) => {
+  res.status(400).send('Faltam informações para cadastrar o produto. Por favor, preencha todos os campos.');
+});
+
 
 // ESTRELAS POST
 app.post('/avaliar/:id_produto', (req, res) => {
@@ -254,7 +272,7 @@ app.post('/edit', function (req, res) {
     });
   } catch (erro) {
     // SQL
-    let sql = `UPDATE produtos SET nome='${nome}', valor=${valor}, WHERE id_produto=${id_produto}`;
+    let sql = `UPDATE produtos SET nome='${nome}', valor=${valor} WHERE id_produto=${id_produto}`;
 
     // Executar SQL
     conexaoDB.query(sql, function (erro, retorno) {
