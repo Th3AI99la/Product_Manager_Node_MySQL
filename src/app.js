@@ -36,8 +36,17 @@ app.use(express.static('public'));
 app.use('/src/images', express.static(__dirname + '/images'));
 
 // Configuração do express-handlebars
-
-app.engine('handlebars', engine());
+app.engine(
+  'handlebars',
+  engine({
+    helpers: {
+      // Função auxiliar para verificar igualdade
+      condicionalIgualdade: function (parametro1, parametro2, options) {
+        return parametro1 === parametro2 ? options.fn(this) : options.inverse(this);
+      },
+    },
+  }),
+);
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
@@ -125,7 +134,7 @@ app.post('/register', (req, res) => {
   // Verificar se há um arquivo de imagem na requisição
   if (!req.files || !req.files.imagem || !req.files.imagem.name || !nome || !valor) {
     // Redirecionar para a rota "register-fail" se algo estiver faltando
-    return res.redirect('/register-fail');
+    return res.redirect('/register-status-fail');
   }
 
   let imagem = req.files.imagem.name;
@@ -160,17 +169,18 @@ app.post('/register', (req, res) => {
         console.log(retorno);
 
         // Redirecionar para a rota principal após o cadastro
-        res.redirect('/');
+        res.redirect('/register-status-success');
       },
     );
   });
 });
 
 // Rota para tratamento de falha no cadastro
-app.get('/register-fail', (req, res) => {
-  res.status(400).send('Faltam informações para cadastrar o produto. Por favor, preencha todos os campos.');
+app.get('/register-status-fail', (req, res) => {
+  res
+    .status(400)
+    .send('Faltam informações para cadastrar o produto. Por favor, preencha todos os campos.');
 });
-
 
 // ESTRELAS POST
 app.post('/avaliar/:id_produto', (req, res) => {
@@ -193,33 +203,38 @@ app.post('/avaliar/:id_produto', (req, res) => {
 // Rota remover produtos
 
 app.get('/remover_produto/:id_produto&:imagem', function (req, res) {
-  // SQL
-  let sql = `DELETE FROM produtos WHERE id_produto = ${req.params.id_produto}`;
+  // Tratativa de execeção
+  try {
+    // SQL
+    let sql = `DELETE FROM produtos WHERE id_produto = ${req.params.id_produto}`;
 
-  // Executar SQL
-  conexaoDB.query(sql, function (erro, retorno) {
-    // caso falhe o comando SQL
-    if (erro) {
-      console.error(erro);
-      return res.status(500).send('Erro ao remover o produto.');
-    }
-
-    // caso o comando SQL funcione
-    fs.unlink(__dirname + '/images/' + req.params.imagem, (erro_imagem) => {
-      if (erro_imagem) {
-        console.error(erro_imagem);
-        return res.status(500).send('Erro ao remover a imagem.');
+    // Executar SQL
+    conexaoDB.query(sql, function (erro, retorno) {
+      // caso falhe o comando SQL
+      if (erro) {
+        console.error(erro);
+        return res.status(500).send('Erro ao remover o produto.');
       }
 
-      // Redirecionar para a rota principal após a remoção
-      res.redirect('/');
+      // caso o comando SQL funcione
+      fs.unlink(__dirname + '/images/' + req.params.imagem, (erro_imagem) => {
+        if (erro_imagem) {
+          console.error(erro_imagem);
+          return res.status(500).send('Erro ao remover a imagem.');
+        }
+      });
     });
-  });
+
+    // Redirecionar para a rota principal após a remoção
+    res.redirect('/remove-status-success');
+  } catch (erro) {
+    res.redirect('/remove-status-fail');
+  }
 });
 
 // Rota redirecionar forms para edição/alteração
 
-app.get('/editForms/:id_produto', function (req, res) {
+app.get('/edit-forms/:id_produto', function (req, res) {
   //SQL
   let sql = `SELECT * FROM produtos WHERE id_produto = ${req.params.id_produto}`;
 
@@ -229,7 +244,7 @@ app.get('/editForms/:id_produto', function (req, res) {
     if (erro) throw erro;
 
     // caso de certo o comando SQL
-    res.render('editForms', { produto: retorno[0] });
+    res.render('edit-forms', { produto: retorno[0] });
   });
 });
 
@@ -242,49 +257,55 @@ app.post('/edit', function (req, res) {
   let id_produto = req.body.id_produto;
   let nameImage = req.body.nameImage;
 
-  // Definir o tipo de edição
+  // Validar nome do produto e valor
 
-  try {
-    // Objeto de imagem
-    let imagem = req.files.imagem;
+  if (nome == '' || valor == '' || isNaN(valor)) {
+    res.redirect('/edit-status-fail');
+  } else {
+    // Definir o tipo de edição
 
-    // SQL
-    let sql = `UPDATE produtos SET nome='${nome}', valor=${valor}, imagem='${imagem.name}' WHERE id_produto=${id_produto}`;
+    try {
+      // Objeto de imagem
+      let imagem = req.files.imagem;
 
-    // Executar comando SQL
-    conexaoDB.query(sql, function (erro, retorno) {
-      // caso falhe o comando SQL
-      if (erro) throw erro;
+      // SQL
+      let sql = `UPDATE produtos SET nome='${nome}', valor=${valor}, imagem='${imagem.name}' WHERE id_produto=${id_produto}`;
 
-      // Remover imagem antiga
+      // Executar comando SQL
+      conexaoDB.query(sql, function (erro, retorno) {
+        // caso falhe o comando SQL
+        if (erro) throw erro;
 
-      const fs = require('fs');
+        // Remover imagem antiga
 
-      fs.unlink(__dirname + '/images/' + nameImage, (erro_imagem) => {
-        if (erro_imagem) {
-          console.error(erro_imagem);
-          return res.status(500).send('Erro ao remover a imagem.');
-        }
+        const fs = require('fs');
+
+        fs.unlink(__dirname + '/images/' + nameImage, (erro_imagem) => {
+          if (erro_imagem) {
+            console.error(erro_imagem);
+            return res.status(500).send('Erro ao remover a imagem.');
+          }
+        });
+
+        // Cadastrar nova imagem
+        imagem.mv(__dirname + '/images/' + imagem.name);
       });
+    } catch (erro) {
+      // SQL
+      let sql = `UPDATE produtos SET nome='${nome}', valor=${valor} WHERE id_produto=${id_produto}`;
 
-      // Cadastrar nova imagem
-      imagem.mv(__dirname + '/images/' + imagem.name);
-    });
-  } catch (erro) {
-    // SQL
-    let sql = `UPDATE produtos SET nome='${nome}', valor=${valor} WHERE id_produto=${id_produto}`;
+      // Executar SQL
+      conexaoDB.query(sql, function (erro, retorno) {
+        // caso falhe o comando SQL
 
-    // Executar SQL
-    conexaoDB.query(sql, function (erro, retorno) {
-      // caso falhe o comando SQL
+        if (erro) throw erro;
+      });
+    }
 
-      if (erro) throw erro;
-    });
+    // Redirecionar para rota principal
+
+    res.redirect('/edit-status-success');
   }
-
-  // Redirecionar para rota principal
-
-  res.redirect('/');
 });
 
 // Configuração do Servidor
@@ -292,7 +313,7 @@ const PORTA = 3000;
 
 const servidor = app.listen(PORTA, function (erro) {
   if (erro) {
-    res.render('editForms');
+    res.render('edit-forms');
     console.error('Erro ao iniciar o servidor:', erro.message);
 
     // Tratar erros específicos, se necessário

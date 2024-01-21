@@ -8,6 +8,50 @@
 
             <div class="col-6 offset-3">
 
+
+                {{! Messages - success }}
+                {{#condicionalIgualdade message_status "register-status-success"}}
+                <div class="alert alert-success">Produto Cadastrado com Sucesso!</div>
+                {{/condicionalIgualdade}}
+
+                {{#condicionalIgualdade message_status "remove-status-success"}}
+                <div class="alert alert-success">Produto Removido com Sucesso!</div>
+                {{/condicionalIgualdade}}
+
+                {{#condicionalIgualdade message_status "edit-status-success"}}
+                <div class="alert alert-success">Produto Editado com Sucesso!</div>
+                {{/condicionalIgualdade}}
+
+
+                {{! Messages - faill }}
+
+
+                {{#condicionalIgualdade message_status "register-status-fail"}}
+                <div class="alert alert-danger">Falha ao Cadastrar o Produto!</div>
+                {{/condicionalIgualdade}}
+
+                {{#condicionalIgualdade message_status "remove-status-fail"}}
+                <div class="alert alert-danger">Falha ao Remover o Produto!</div>
+                {{/condicionalIgualdade}}
+
+                {{#condicionalIgualdade message_status "edit-status-fail"}}
+                <div class="alert alert-danger">Falha ao Editar o Produto!</div>
+                {{/condicionalIgualdade}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <form action="/register" method="post" enctype="multipart/form-data">
 
                     <input type="text" name="nome" class="form-control" placeholder="Nome do produto">
@@ -55,7 +99,7 @@
 
                     </div>
 
-                    <a href="/editForms/{{id_produto}}" class="btn btn-person_alter">Alterar</a>
+                    <a href="/edit-forms/{{id_produto}}" class="btn btn-person_alter">Alterar</a>
                     <a href="/remover_produto/{{id_produto}}&{{imagem}}" class="btn btn-person_remove">Remover</a>
                 </div>
             </div>

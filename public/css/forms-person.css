@@ -260,3 +260,7 @@ form input:hover {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
 }
+
+.alert {
+  margin-top: 30px;
+}
